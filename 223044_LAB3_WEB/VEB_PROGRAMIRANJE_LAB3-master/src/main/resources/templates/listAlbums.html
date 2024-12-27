@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Albums</title>
+</head>
+<body>
+<header>
+    <h1>All Albums</h1>
+</header>
+<main>
+
+    <div th:if="${error != null}" th:text="${error}" style="color: red;"></div>
+    <th:block sec:authorize="isAnonymous()">
+
+            <a href="/login" style="margin-bottom: 20px; display: inline-block;">
+                <button>LOGIN</button>
+            </a>
+
+    </th:block>
+    <th:block sec:authorize="isAuthenticated()">
+
+            <a href="/logout" style="margin-bottom: 20px; display: inline-block;">
+                <button>LOGOUT</button>
+            </a>
+
+    </th:block>
+    <a href="/songs"> <button>Songs </button></a>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+        <div>
+            <a href="/albums/edit-form" style="margin-bottom: 20px; display: inline-block;">
+                <button>Create New Album</button>
+            </a>
+        </div>
+    </th:block>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Genre</th>
+            <th>Release Year</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="album : ${albums}">
+            <td th:text="${album.name}"></td>
+            <td th:text="${album.genre}"></td>
+            <td th:text="${album.releaseYear}"></td>
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <td>
+                    <a th:href="@{'/albums/edit-form/' + ${album.getId()}}">
+                        <button>Edit</button>
+                    </a>
+
+                    <form th:action="@{'/albums/delete/' + ${album.getId()}}" th:method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                </td>
+            </th:block>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
